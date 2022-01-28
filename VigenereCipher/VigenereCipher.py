@@ -36,6 +36,15 @@ def decrypt(text, keyword):
 
 # Attempts to crack the encription by using kasiski's algorithm
 def kasiski(text):
+    # Find repeated substrings of at least 3 characters in the ciphertext (initial problem)
+
+    # For every repeated substring, figure out their distances and the factors that make them up (if distance is 30 the factors are 2 * 3 * 5)
+
+    # The largest common factor of all the distances is the key length
+
+    # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
+
+    # Show the user all matches combinations so he can choose the correct one or use a dictionary
     pass
 
 # Sets the function calls for what the user wants to do.
