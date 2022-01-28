@@ -1,4 +1,12 @@
+from __future__ import unicode_literals
+from enum import unique
 import sys
+from suffix_trees import STree
+
+'''
+How to use:
+    pip install suffix-tree
+'''
 
 # encripts file with the VigenereCipherAlgorithm
 def encrypt(text, keyword):
@@ -37,6 +45,39 @@ def decrypt(text, keyword):
 # Attempts to crack the encription by using kasiski's algorithm
 def kasiski(text):
     # Find repeated substrings of at least 3 characters in the ciphertext (initial problem)
+    stree = STree.STree(text)
+
+    repeated_substrings_set = []
+
+    # Finds all substrings of size > 3 present in the ciphertext
+    for substring_length in range(3, int(len(text) / 2)):
+        for substring in range(0, len(text) - substring_length):
+            if 3 <= len(stree.find_all(text[substring : substring + substring_length])):
+                repeated_substrings_set.append(stree.find_all(text[substring : substring + substring_length]))
+
+    # Makes all the sets into arrays and sorts them (sets can't be sorted or use the [] operator)
+    repeated_substrings = []
+    for i in range(len(repeated_substrings_set)):
+        aux = []
+        for j in range(len(repeated_substrings_set[i])):
+            aux.append(repeated_substrings_set[i].pop())
+
+        repeated_substrings.append(aux)
+
+    for i in repeated_substrings:
+        i.sort()
+    repeated_substrings.sort()
+
+    # Delete obviously equal substrings
+    unique_substrings = []
+    for i in repeated_substrings:
+        if not(i in unique_substrings):
+            unique_substrings.append(i)
+
+    # Figure out how to dele useless stuff to free memory
+    repeated_substrings.delete()
+
+    print(unique_substrings)
 
     # For every repeated substring, figure out their distances and the factors that make them up (if distance is 30 the factors are 2 * 3 * 5)
 
@@ -45,7 +86,7 @@ def kasiski(text):
     # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
 
     # Show the user all matches combinations so he can choose the correct one or use a dictionary
-    pass
+    return text
 
 # Sets the function calls for what the user wants to do.
 def main(): 
