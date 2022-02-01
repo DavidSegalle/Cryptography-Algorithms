@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from enum import unique
 import sys
 from suffix_trees import STree
+import kasiski
 
 '''
 How to use:
@@ -43,7 +44,7 @@ def decrypt(text, keyword):
     return decrypted
 
 # Attempts to crack the encription by using kasiski's algorithm
-def kasiski(text):
+'''def kasiski(text):
     # Find repeated substrings of at least 3 characters in the ciphertext (initial problem)
     stree = STree.STree(text)
 
@@ -74,26 +75,32 @@ def kasiski(text):
         if not(i in unique_substrings):
             unique_substrings.append(i)
 
-    # Figure out how to dele useless stuff to free memory
-    repeated_substrings.delete()
+    del repeated_substrings_set
+    del repeated_substrings
 
-    print(unique_substrings)
+    # Distance for each substring
+    distances = []
 
-    # For every repeated substring, figure out their distances and the factors that make them up (if distance is 30 the factors are 2 * 3 * 5)
+    for substring in unique_substrings:
+        for j in range(len(substring) - 1):
+            distances.append(substring[j + 1] - substring[j])
+
+    # distances.sort() Might not be necessary
+    print(distances)
 
     # The largest common factor of all the distances is the key length
 
     # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
 
     # Show the user all matches combinations so he can choose the correct one or use a dictionary
-    return text
+    return text'''
 
 # Sets the function calls for what the user wants to do.
 def main(): 
 
     text = open("VigenereCipher.txt", "r+")
 
-    keyword = "palavra"
+    keyword = "chave"
 
     data = text.read()
 
@@ -102,7 +109,7 @@ def main():
     if sys.argv[1] == "decrypt":
         data = decrypt(data, keyword)
     if sys.argv[1] == "kasiski":
-        data = kasiski(data)
+        data = kasiski.kasiski(data)
 
     text.truncate(0)
     text.seek(0)

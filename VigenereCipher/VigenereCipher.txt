@@ -1,1 +1,1 @@
-This text was designed to test the efficiency and correctness of the VigenereCipher. It needs to be slightly longer than the CaesarCipher text due to the keys being multiple letters long, however, that shouldn't be an issue.
+·ÐÊé×ÍÙêÚÉÔÉÈÛÊÝÓÈÌêÔÜÆéÙÜÉÛÈÎÇßÈÌÍÏÙÞÉÏÚÆ×ÓèÊÆÜÏÛØÖÐÜ×ÐÆ»ÌÏÆäÊÕÍ¤ßÕËÍÓ¤¬ÜäÊÈÌÔÙÒÃÛÖÔÊÝÍ×ÔÚÑÒÖÈÛ×ÜÉ×ÓÜÉÛ¦ÉÆéÆÕ«ÊæÍÈÚêÊÛÜÚÚÈÕå×ÐÆÐÈáÔÇÈÑÏÝÐÝÍêÎÓÔÆÑÈÜÕÛ×ÖÍåÓÊÞÔÚÍ×Û×ÕÞÆ×ÔÞÔØÔÅä×ÃÛÄÖßØÖÝÆ¤
