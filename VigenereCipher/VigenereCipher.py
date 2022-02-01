@@ -109,7 +109,7 @@ def main():
     if sys.argv[1] == "decrypt":
         data = decrypt(data, keyword)
     if sys.argv[1] == "kasiski":
-        data = kasiski.kasiski(data)
+        data = kasiski.kasiski(data, 16)
 
     text.truncate(0)
     text.seek(0)

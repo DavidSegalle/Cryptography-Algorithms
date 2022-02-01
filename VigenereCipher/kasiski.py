@@ -41,9 +41,24 @@ def calcDistances(repeated_substrings):
         for j in range(len(substring) - 1):
             distances.append(substring[j + 1] - substring[j])
     
+    distances.sort(reverse = True)
     return distances
 
-def kasiski(text):
+def highestCommonFactor(values):
+
+    # Find the factors of each number in values
+    factors = []
+    for i in values:
+        factors.append(i)
+        for j in range(1, (i // 2) + 1, 1):
+            if not (i % j):
+                factors.append(j)
+
+    factors.sort()
+
+    return factors
+
+def kasiski(text, max_key_size):
     stree = STree.STree(text)
 
     repeated_substrings_set = findSubstring(stree, text)
@@ -52,8 +67,15 @@ def kasiski(text):
 
     distances = calcDistances(repeated_substrings)
 
-    print(distances)
+    # The correct key is most likely the biggest one (given a limit to not test ridiculously large keys)
+    all_key_lengths = highestCommonFactor(distances)
 
+    key_lengths = []
+    for i in all_key_lengths:
+        if i < max_key_size and not(i in key_lengths):
+            key_lengths.append(i)
+
+    print(key_lengths)
     # The largest common factor of all the distances is the key length
 
     # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
