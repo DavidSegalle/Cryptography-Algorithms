@@ -1,3 +1,4 @@
+from numpy import common_type
 from suffix_trees import STree
 
 # Finds all substrings of size > 3 present in the ciphertext and returns them as a sorted array
@@ -58,6 +59,46 @@ def highestCommonFactor(values):
 
     return factors
 
+def findKeys(text):
+
+    # Most common characters are ' ', 'e', 't' so assume that one of them is the most common in the text
+
+    common_letter = " et"
+    common_text = [0] * 255
+    for letter in text:
+        common_text[ord(letter)] += 1
+
+
+def probableKeys(text, length):
+    
+    # Use the length to assume which letter of the ciphertext was used
+    iterations = len(text) // length
+    print(length)
+    divided_text = [""] * length
+    i = 0
+    while i < length:
+        position = i
+        while position < len(text):
+            a = text[position]
+            divided_text[i] += a
+            position += length
+        i += 1
+    
+    # Use probability for each member of divided_text to get the 4 most likely keys
+    # Will use a different form of probability to what is used in CaesarCipher
+    for i in divided_text:
+        findKeys(i)
+
+def likelyKeysCombo(text, key_lengths):
+
+    # Start by the largest keys since they are the most likely ones
+    keys = []
+
+    for i in range(len(key_lengths) - 1, -1, -1):
+        # For each key length use probability crack to figure out which are the most likey keys
+        keys.append(probableKeys(text, key_lengths[i]))
+    return keys
+# Attempts to break VigenereCipher using kasiski algorithm and some probability
 def kasiski(text, max_key_size):
     stree = STree.STree(text)
 
@@ -71,12 +112,14 @@ def kasiski(text, max_key_size):
     all_key_lengths = highestCommonFactor(distances)
 
     key_lengths = []
+    # Will only test keys of size > 3 and smaller than what you decide as max
     for i in all_key_lengths:
-        if i < max_key_size and not(i in key_lengths):
+        if i < max_key_size and i >= 3 and not(i in key_lengths):
             key_lengths.append(i)
 
-    print(key_lengths)
-    # The largest common factor of all the distances is the key length
+    likelyKeysCombo(text, key_lengths)
+
+    # Use probability crack to see the most likely keys for each letter and test them against each other using a dictionary
 
     # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
 
