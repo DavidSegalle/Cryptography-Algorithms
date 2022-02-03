@@ -1,6 +1,14 @@
 from numpy import common_type
 from suffix_trees import STree
 
+'''
+    This are the most common characters in english text, if your text isn't being decyphered try adding more letters from most common to least, doing that will impact speeds
+'''
+common_letter = " eta"
+
+
+
+
 # Finds all substrings of size > 3 present in the ciphertext and returns them as a sorted array
 def findSubstring(stree, text):
     repeated_substrings_set = []
@@ -11,6 +19,9 @@ def findSubstring(stree, text):
                 repeated_substrings_set.append(stree.find_all(text[substring : substring + substring_length]))
 
     return repeated_substrings_set
+
+
+
 
 # Turns the set of substrings into an array to make it easier to work with
 def setToArray(repeated_substrings_set):
@@ -34,6 +45,9 @@ def setToArray(repeated_substrings_set):
 
     return unique_substrings
 
+
+
+
 # Calculates the distance between the positions of equal substrings in the array
 def calcDistances(repeated_substrings):
     distances = []
@@ -44,6 +58,9 @@ def calcDistances(repeated_substrings):
     
     distances.sort(reverse = True)
     return distances
+
+
+
 
 def highestCommonFactor(values):
 
@@ -59,21 +76,42 @@ def highestCommonFactor(values):
 
     return factors
 
-def findKeys(text):
 
-    # Most common characters are ' ', 'e', 't' so assume that one of them is the most common in the text
 
-    common_letter = " et"
+
+def findKeys(text):    
+    
+    # Count how many of each character
     common_text = [0] * 255
     for letter in text:
         common_text[ord(letter)] += 1
+    
+    # The largest number in common_text is one of the characters
+    largest_pos = 0
+    for i in range(len(common_text)):
+        if common_text[i] >= common_text[largest_pos]:
+            largest_pos = i
+
+    # The keys for that bit of text could be:
+    keys = []
+    for i in common_letter:
+        keys.append(largest_pos - ord(i))
+    
+    return keys
+
+
+
+
+# Will test all key combinations given and if over 50% (to be decided) matches with the dictionary it will return the text, otherwise doesn't return anything (None)
+def getCorrectText(text, keys):
+
+
+
 
 
 def probableKeys(text, length):
     
     # Use the length to assume which letter of the ciphertext was used
-    iterations = len(text) // length
-    print(length)
     divided_text = [""] * length
     i = 0
     while i < length:
@@ -86,8 +124,15 @@ def probableKeys(text, length):
     
     # Use probability for each member of divided_text to get the 4 most likely keys
     # Will use a different form of probability to what is used in CaesarCipher
+    keys = []
     for i in divided_text:
-        findKeys(i)
+        keys.append(findKeys(i))
+
+    # Test all possible key combinations against the dictionary, if over 50% is correct consider it done
+    correct = getCorrectText(text, keys)
+
+
+
 
 def likelyKeysCombo(text, key_lengths):
 
@@ -97,7 +142,12 @@ def likelyKeysCombo(text, key_lengths):
     for i in range(len(key_lengths) - 1, -1, -1):
         # For each key length use probability crack to figure out which are the most likey keys
         keys.append(probableKeys(text, key_lengths[i]))
+
     return keys
+
+
+
+
 # Attempts to break VigenereCipher using kasiski algorithm and some probability
 def kasiski(text, max_key_size):
     stree = STree.STree(text)
