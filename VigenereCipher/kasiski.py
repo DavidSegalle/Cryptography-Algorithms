@@ -102,10 +102,42 @@ def findKeys(text):
 
 
 
-# Will test all key combinations given and if over 50% (to be decided) matches with the dictionary it will return the text, otherwise doesn't return anything (None)
+def dictionaryTest(text):
+    dictionary_file = open("../dictionary.txt", "r")
+    dictionary = dictionary_file.read()
+
+    words = text.split()
+
+    correct_words = 0
+    for word in (words): 
+            if word in dictionary: 
+                correct_words += 1
+    
+    if correct_words > len(words) / 2:
+        return text
+    return None
+
+
+
+
 def getCorrectText(text, keys):
 
+    current = [0] * len(keys)
 
+    test_text = ""
+    for i in range(len(text)):
+        test_text += chr((ord(text[i]) - ord(keys[i] % len(keys))) % 256)
+    
+    correct = dictionaryTest(test_text)
+    changing_keys = True
+    
+    # Transformar isso em um processo automático e direto
+    while(changing_keys):
+        current[len(keys) - 1] += 1 # Aumentar a última posição
+        if current[len(keys) - 1] >= len(keys): # Quando ela passar da posição final ir para a anterior e refazer o processo até todas as possibilidades serem testadas
+            current[len(keys) - 1] = 0
+            current[len(keys) - 2] = 0
+            # No total há len(keys[0]) * len(keys) possibilidades, basta fazer um loop desse tamanho seguindo o algoritmo
 
 
 
@@ -128,7 +160,6 @@ def probableKeys(text, length):
     for i in divided_text:
         keys.append(findKeys(i))
 
-    # Test all possible key combinations against the dictionary, if over 50% is correct consider it done
     correct = getCorrectText(text, keys)
 
 
