@@ -126,7 +126,7 @@ def getCorrectText(text, keys):
 
     test_text = ""
     for i in range(len(text)):
-        test_text += chr((ord(text[i]) - ord(keys[i] % len(keys))) % 256)
+        test_text += chr((ord(text[i]) - keys[i][0] % len(keys)) % 256)
     
     correct = dictionaryTest(test_text)
     changing_keys = True
