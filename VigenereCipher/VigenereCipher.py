@@ -50,16 +50,16 @@ def main():
 
     text = open(path.join(path.dirname(__file__), "VigenereCipher.txt"), "r+")
 
-    keyword = "chave"
+    keyword = "caca"
 
     data = text.read()
 
     if sys.argv[1] == "encrypt":
         data = encrypt(data, keyword)
-    if sys.argv[1] == "decrypt":
+    elif sys.argv[1] == "decrypt":
         data = decrypt(data, keyword)
-    if sys.argv[1] == "kasiski":
-        data = kasiski.kasiski(data, 16)
+    elif sys.argv[1] == "kasiski":
+        data = kasiski.kasiski(data, 8)
 
     text.truncate(0)
     text.seek(0)

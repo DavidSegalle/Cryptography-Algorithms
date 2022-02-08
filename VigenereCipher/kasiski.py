@@ -117,8 +117,21 @@ def dictionaryTest(text):
                 correct_words += 1
     
     if correct_words > len(words) / 2:
-        return text
-    return None
+        return True
+    return False
+
+
+
+
+def testKey(text, key):
+    
+    decrypted = ""
+    for i in range(len(text)):
+        decrypted += chr((ord(text[i]) - ord(key[i % len(key)])) % 256)
+    
+    if dictionaryTest(decrypted):
+        return key
+    return False
 
 
 
@@ -127,23 +140,26 @@ def getCorrectText(text, keys):
 
     index_manager = [0] * len(keys)
 
-    for i in range(len(keys[0]) ** len(keys)):#range(len(keys) * len(keys[0])):
-
-        index_manager[-1] += 1
+    for i in range(len(keys[0]) ** len(keys)):
 
         for j in range(len(index_manager) - 1, -1, -1):
 
-            if index_manager[j] >= len(keys[0]):# and j > 0:
+            if index_manager[j] >= len(keys[0]):
                 index_manager[j] = 0
                 index_manager[j - 1] += 1
 
         keyword = ""
         for j in range(len(keys)):
 
-            aux = keys[j][index_manager[j]]
+            aux = keys[j][index_manager[j]] % 256
             keyword += chr(aux)
         
-        # Attempt dictionaryCrack on the keyword
+        if testKey(text, keyword):
+            return keyword       
+
+        index_manager[-1] += 1
+
+    return False
 
 
 
@@ -207,7 +223,14 @@ def kasiski(text, max_key_size):
     keys = likelyKeysCombo(text, key_lengths)
     
     # keys[0] deve ser modificado pra pegar todos os tamanhos de chave possíveis
-    getCorrectText(text, keys[0])
+    for i in keys:
+        print(i)
+        key = getCorrectText(text, i)
+        if key:
+            decrypted = ""
+            for i in range(len(text)):
+                decrypted += chr((ord(text[i]) - ord(key[i % len(key)])) % 256)
+            return decrypted
 
     # Use probability crack to see the most likely keys for each letter and test them against each other using a dictionary
 
