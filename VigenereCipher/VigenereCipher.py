@@ -3,10 +3,12 @@ from enum import unique
 import sys
 from suffix_trees import STree
 import kasiski
+from os import path
 
 '''
 How to use:
     pip install suffix-tree
+        DON'T RUN "PIP INSTALL" AS AN ADMIN
 '''
 
 # encripts file with the VigenereCipherAlgorithm
@@ -46,7 +48,7 @@ def decrypt(text, keyword):
 # Sets the function calls for what the user wants to do.
 def main(): 
 
-    text = open("VigenereCipher.txt", "r+")
+    text = open(path.join(path.dirname(__file__), "VigenereCipher.txt"), "r+")
 
     keyword = "chave"
 

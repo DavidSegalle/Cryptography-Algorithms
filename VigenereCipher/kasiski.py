@@ -1,5 +1,8 @@
-from numpy import common_type
+#from numpy import common_type
 from suffix_trees import STree
+
+#from VigenereCipher.VigenereCipher import decrypt
+
 
 '''
     This are the most common characters in english text, if your text isn't being decyphered try adding more letters from most common to least, doing that will impact speeds
@@ -122,22 +125,26 @@ def dictionaryTest(text):
 
 def getCorrectText(text, keys):
 
-    current = [0] * len(keys)
+    index_manager = [0] * len(keys)
 
-    test_text = ""
-    for i in range(len(text)):
-        test_text += chr((ord(text[i]) - keys[i][0] % len(keys)) % 256)
-    
-    correct = dictionaryTest(test_text)
-    changing_keys = True
-    
-    # Transformar isso em um processo automático e direto
-    while(changing_keys):
-        current[len(keys) - 1] += 1 # Aumentar a última posição
-        if current[len(keys) - 1] >= len(keys): # Quando ela passar da posição final ir para a anterior e refazer o processo até todas as possibilidades serem testadas
-            current[len(keys) - 1] = 0
-            current[len(keys) - 2] = 0
-            # No total há len(keys[0]) * len(keys) possibilidades, basta fazer um loop desse tamanho seguindo o algoritmo
+    for i in range(len(keys[0]) ** len(keys)):#range(len(keys) * len(keys[0])):
+
+        index_manager[-1] += 1
+
+        for j in range(len(index_manager) - 1, -1, -1):
+
+            if index_manager[j] >= len(keys[0]):# and j > 0:
+                index_manager[j] = 0
+                index_manager[j - 1] += 1
+
+        keyword = ""
+        for j in range(len(keys)):
+
+            aux = keys[j][index_manager[j]]
+            keyword += chr(aux)
+        
+        # Attempt dictionaryCrack on the keyword
+
 
 
 
@@ -160,7 +167,7 @@ def probableKeys(text, length):
     for i in divided_text:
         keys.append(findKeys(i))
 
-    correct = getCorrectText(text, keys)
+    return keys
 
 
 
@@ -173,7 +180,6 @@ def likelyKeysCombo(text, key_lengths):
     for i in range(len(key_lengths) - 1, -1, -1):
         # For each key length use probability crack to figure out which are the most likey keys
         keys.append(probableKeys(text, key_lengths[i]))
-
     return keys
 
 
@@ -198,7 +204,10 @@ def kasiski(text, max_key_size):
         if i < max_key_size and i >= 3 and not(i in key_lengths):
             key_lengths.append(i)
 
-    likelyKeysCombo(text, key_lengths)
+    keys = likelyKeysCombo(text, key_lengths)
+    
+    # keys[0] deve ser modificado pra pegar todos os tamanhos de chave possíveis
+    getCorrectText(text, keys[0])
 
     # Use probability crack to see the most likely keys for each letter and test them against each other using a dictionary
 
