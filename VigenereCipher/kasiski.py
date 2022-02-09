@@ -65,9 +65,9 @@ def calcDistances(repeated_substrings):
 
 
 
-def highestCommonFactor(values):
+# Finds common factors of the values given
+def commonFactor(values):
 
-    # Find the factors of each number in values
     factors = []
     for i in values:
         factors.append(i)
@@ -82,20 +82,18 @@ def highestCommonFactor(values):
 
 
 
+# Finds the most likely characters to be the key for the text it is given (a substring of the actual text)
 def findKeys(text):    
     
-    # Count how many of each character
     common_text = [0] * 255
     for letter in text:
         common_text[ord(letter)] += 1
-    
-    # The largest number in common_text is one of the characters
+
     largest_pos = 0
     for i in range(len(common_text)):
         if common_text[i] >= common_text[largest_pos]:
             largest_pos = i
 
-    # The keys for that bit of text could be:
     keys = []
     for i in common_letter:
         keys.append(largest_pos - ord(i))
@@ -104,8 +102,9 @@ def findKeys(text):
 
 
 
-
+# Matches the word in the text against the dictionary, if 75% of the words are in the dictionary it means the key has been cracked
 def dictionaryTest(text):
+
     dictionary_file = open("../dictionary.txt", "r")
     dictionary = dictionary_file.read()
 
@@ -116,13 +115,14 @@ def dictionaryTest(text):
             if word in dictionary: 
                 correct_words += 1
     
-    if correct_words > len(words) / 2:
+    if correct_words > (len(words) * 1.5) / 2:
         return True
     return False
 
 
 
 
+# Sets the text up to be tested
 def testKey(text, key):
     
     decrypted = ""
@@ -136,6 +136,7 @@ def testKey(text, key):
 
 
 
+# Looks through all likely keys and if one is found to be correct the key is returned
 def getCorrectText(text, keys):
 
     index_manager = [0] * len(keys)
@@ -163,10 +164,9 @@ def getCorrectText(text, keys):
 
 
 
-
+# Divides the text into subtexts where each letter of the key is correspondant to a different string and looks for the most likely keys
 def probableKeys(text, length):
     
-    # Use the length to assume which letter of the ciphertext was used
     divided_text = [""] * length
     i = 0
     while i < length:
@@ -177,8 +177,6 @@ def probableKeys(text, length):
             position += length
         i += 1
     
-    # Use probability for each member of divided_text to get the 4 most likely keys
-    # Will use a different form of probability to what is used in CaesarCipher
     keys = []
     for i in divided_text:
         keys.append(findKeys(i))
@@ -188,13 +186,13 @@ def probableKeys(text, length):
 
 
 
+# Determines the most likely keys for each probable key length
 def likelyKeysCombo(text, key_lengths):
 
     # Start by the largest keys since they are the most likely ones
     keys = []
 
     for i in range(len(key_lengths) - 1, -1, -1):
-        # For each key length use probability crack to figure out which are the most likey keys
         keys.append(probableKeys(text, key_lengths[i]))
     return keys
 
@@ -212,7 +210,7 @@ def kasiski(text, max_key_size):
     distances = calcDistances(repeated_substrings)
 
     # The correct key is most likely the biggest one (given a limit to not test ridiculously large keys)
-    all_key_lengths = highestCommonFactor(distances)
+    all_key_lengths = commonFactor(distances)
 
     key_lengths = []
     # Will only test keys of size > 3 and smaller than what you decide as max
@@ -224,7 +222,6 @@ def kasiski(text, max_key_size):
     
     # keys[0] deve ser modificado pra pegar todos os tamanhos de chave possíveis
     for i in keys:
-        print(i)
         key = getCorrectText(text, i)
         if key:
             decrypted = ""
@@ -232,9 +229,5 @@ def kasiski(text, max_key_size):
                 decrypted += chr((ord(text[i]) - ord(key[i % len(key)])) % 256)
             return decrypted
 
-    # Use probability crack to see the most likely keys for each letter and test them against each other using a dictionary
-
-    # Use CaesarCipher probability crack for each sequence of letters in the text. A match is when one of the 3 most common characters in english are also the most common in the text
-
-    # Show the user all matches combinations so he can choose the correct one or use a dictionary
+    # If no key is found just return the text itself
     return text
